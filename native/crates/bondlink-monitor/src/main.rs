@@ -6,213 +6,236 @@ use std::time::Duration;
 pub struct InterfaceStats {
     pub name: String,
     pub description: String,
-    pub mac: String,
     pub ip: String,
     pub gateway: String,
+    pub mac: String,
     pub is_up: bool,
     pub speed_mbps: u32,
-    pub bytes_sent: u64,
-    pub bytes_recv: u64,
-    pub packets_sent: u64,
-    pub packets_recv: u64,
-    pub errors_sent: u64,
-    pub errors_recv: u64,
 }
 
+/// Parse PowerShell key-value output (Name : Value format)
+fn parse_ps_blocks(output: &str) -> Vec<HashMap<String, String>> {
+    let mut blocks = Vec::new();
+    let mut current_block = HashMap::new();
+
+    for line in output.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            if !current_block.is_empty() {
+                blocks.push(current_block);
+                current_block = HashMap::new();
+            }
+            continue;
+        }
+
+        if let Some(pos) = line.find(':') {
+            let key = line[..pos].trim().to_string();
+            let value = line[pos + 1..].trim().to_string();
+            if !key.is_empty() {
+                current_block.insert(key, value);
+            }
+        }
+    }
+
+    if !current_block.is_empty() {
+        blocks.push(current_block);
+    }
+
+    blocks
+}
+
+/// Check if adapter is a real physical interface (not virtual)
+fn is_physical_interface(description: &str, name: &str) -> bool {
+    if description.to_lowercase().contains("hyper-v")
+        || description.to_lowercase().contains("vmware")
+        || description.to_lowercase().contains("virtualbox")
+        || description.to_lowercase().contains("wi-fi direct")
+        || description.to_lowercase().contains("microsoft wi-fi")
+        || description.to_lowercase().contains("bluetooth")
+        || name.to_lowercase().contains("vethernet")
+        || name.to_lowercase().contains("local area connection*")
+    {
+        return false;
+    }
+    true
+}
+
+/// Get network interface statistics using PowerShell
 pub fn get_network_stats() -> HashMap<String, InterfaceStats> {
     let mut interfaces = HashMap::new();
 
-    // Use netsh to get interface info
-    let output = Command::new("netsh")
-        .args(&["interface", "show", "interface"])
+    // Use PowerShell directly with -Command
+    let output = Command::new("powershell")
+        .args(&[
+            "-NoProfile",
+            "-Command",
+            "Get-NetAdapter | Format-List Name, InterfaceDescription, MacAddress, Status, LinkSpeed",
+        ])
         .output()
-        .expect("Failed to run netsh");
+        .ok();
 
-    let output_str = String::from_utf8_lossy(&output.stdout);
+    if let Some(out) = output {
+        let output_str = String::from_utf8_lossy(&out.stdout);
+        let blocks = parse_ps_blocks(&output_str);
 
-    for line in output_str.lines() {
-        let parts: Vec<&str> = line.split_whitespace().collect();
-        if parts.len() >= 4 {
-            let name = parts[3..].join(" ");
-            let is_up = line.contains("Connected");
-            
-            // Get IP info
-            let ip_output = Command::new("cmd")
-                .args(&["/c", &format!("netsh interface ipv4 show interface \"{}\"", name)])
-                .output()
-                .ok();
-            
-            let mut ip = String::new();
-            let mut gateway = String::new();
-            
-            if let Some(ip_out) = ip_output {
-                let ip_str = String::from_utf8_lossy(&ip_out.stdout);
-                for ip_line in ip_str.lines() {
-                    if ip_line.contains("IP Address") || ip_line.contains("IPv4 Address") {
-                        if let Some(pos) = ip_line.find(':') {
-                            ip = ip_line[pos+1..].trim().to_string();
-                        }
-                    }
-                    if ip_line.contains("Default Gateway") || ip_line.contains("default gateway") {
-                        if let Some(pos) = ip_line.find(':') {
-                            gateway = ip_line[pos+1..].trim().to_string();
-                        }
-                    }
+        for props in blocks {
+            if let (Some(name), Some(description), Some(mac), Some(status), Some(link_speed)) = (
+                props.get("Name"),
+                props.get("InterfaceDescription"),
+                props.get("MacAddress"),
+                props.get("Status"),
+                props.get("LinkSpeed"),
+            ) {
+                // Skip virtual interfaces
+                if !is_physical_interface(description, name) {
+                    continue;
                 }
+
+                let is_up = status == "Up";
+                let speed_mbps = parse_speed(link_speed);
+
+                // Get IP and gateway
+                let (ip, gateway) = get_ip_and_gateway(name);
+
+                interfaces.insert(
+                    name.clone(),
+                    InterfaceStats {
+                        name: name.clone(),
+                        description: description.clone(),
+                        ip,
+                        gateway,
+                        mac: mac.clone(),
+                        is_up,
+                        speed_mbps,
+                    },
+                );
             }
-
-            // Get MAC from getmac
-            let mac_output = Command::new("getmac")
-                .args(&["/v", "/fo", "csv"])
-                .output()
-                .ok();
-            
-            let mut mac = String::new();
-            if let Some(mac_out) = mac_output {
-                let mac_str = String::from_utf8_lossy(&mac_out.stdout);
-                for mac_line in mac_str.lines() {
-                    if mac_line.to_lowercase().contains(&name.to_lowercase()) {
-                        let csv_parts: Vec<&str> = mac_line.split(',').collect();
-                        if csv_parts.len() > 1 {
-                            mac = csv_parts[1].trim().trim_matches('"').to_string();
-                        }
-                    }
-                }
-            }
-
-            // Get speed from wmic
-            let speed_output = Command::new("wmic")
-                .args(&["nic", "where", &format!("NetConnectionID='{}'", name), "get", "Speed", "/value"])
-                .output()
-                .ok();
-            
-            let mut speed = 0u64;
-            if let Some(speed_out) = speed_output {
-                let speed_str = String::from_utf8_lossy(&speed_out.stdout);
-                for speed_line in speed_str.lines() {
-                    if speed_line.starts_with("Speed=") {
-                        speed = speed_line[6..].trim().parse().unwrap_or(0);
-                    }
-                }
-            }
-
-            // Get statistics from netstat
-            let stats_output = Command::new("netstat")
-                .args(&["-e"])
-                .output()
-                .ok();
-            
-            let mut bytes_sent = 0u64;
-            let mut bytes_recv = 0u64;
-            let mut packets_sent = 0u64;
-            let mut packets_recv = 0u64;
-
-            if let Some(stats_out) = stats_output {
-                let stats_str = String::from_utf8_lossy(&stats_out.stdout);
-                for stats_line in stats_str.lines() {
-                    if !stats_line.trim().is_empty() && !stats_line.contains("Statistics") {
-                        let stats_parts: Vec<&str> = stats_line.split_whitespace().collect();
-                        if stats_parts.len() >= 3 {
-                            if let Ok(recv) = stats_parts[1].parse::<u64>() {
-                                if let Ok(sent) = stats_parts[2].parse::<u64>() {
-                                    bytes_recv = recv;
-                                    bytes_sent = sent;
-                                    packets_recv = recv / 1000;  // Approximate
-                                    packets_sent = sent / 1000;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            interfaces.insert(name.clone(), InterfaceStats {
-                name,
-                description: String::new(),
-                mac,
-                ip,
-                gateway,
-                is_up,
-                speed_mbps: (speed / 1_000_000) as u32,
-                bytes_sent,
-                bytes_recv,
-                packets_sent,
-                packets_recv,
-                errors_sent: 0,
-                errors_recv: 0,
-            });
         }
     }
 
     interfaces
 }
 
-fn print_status(interfaces: &HashMap<String, InterfaceStats>) {
-    println!("╔════════════════════════════════════════════════════════════════════════════════════╗");
-    println!("║                         BondLink Network Monitor v0.1.0                            ║");
-    println!("╠════════════════════════════════════════════════════════════════════════════════════╣");
-    println!("║ {:15} │ {:8} │ {:12} │ {:15} │ {:15} │ {:8} ║", 
-        "Interface", "Status", "Speed", "IP", "Gateway", "IP");
-    println!("╠════════════════════════════════════════════════════════════════════════════════════╣");
+fn parse_speed(speed_str: &str) -> u32 {
+    let speed_str = speed_str.trim();
+    if speed_str.contains("Gbps") || speed_str.contains("Gbit") {
+        speed_str
+            .split_whitespace()
+            .next()
+            .and_then(|s| s.parse::<f64>().ok())
+            .map(|v| (v * 1000.0) as u32)
+            .unwrap_or(0)
+    } else if speed_str.contains("Mbps") || speed_str.contains("Mbit") {
+        speed_str
+            .split_whitespace()
+            .next()
+            .and_then(|s| s.parse::<u32>().ok())
+            .unwrap_or(0)
+    } else {
+        0
+    }
+}
 
-    let mut total_sent = 0u64;
-    let mut total_recv = 0u64;
-    let mut total_pkt_sent = 0u64;
-    let mut total_pkt_recv = 0u64;
-    let mut total_speed = 0u32;
-    let mut active_count = 0;
+fn get_ip_and_gateway(adapter_name: &str) -> (String, String) {
+    let mut ip = String::new();
+    let mut gateway = String::new();
 
-    for (_, stats) in interfaces.iter() {
-        let status = if stats.is_up { "🟢 UP  " } else { "🔴 DOWN" };
-        
-        let speed_str = if stats.speed_mbps >= 1000 {
-            format!("{} Gbps", stats.speed_mbps / 1000)
-        } else {
-            format!("{} Mbps", stats.speed_mbps)
-        };
+    // Get IP address
+    let ip_output = Command::new("powershell")
+        .args(&[
+            "-NoProfile",
+            "-Command",
+            &format!(
+                "Get-NetIPAddress -InterfaceAlias '{}' -AddressFamily IPv4 -ErrorAction SilentlyContinue | Format-List IPAddress",
+                adapter_name
+            ),
+        ])
+        .output()
+        .ok();
 
-        let ip_short = if stats.ip.len() > 15 {
-            &stats.ip[..15]
-        } else {
-            &stats.ip
-        };
-        
-        let gw_short = if stats.gateway.len() > 15 {
-            &stats.gateway[..15]
-        } else {
-            &stats.gateway
-        };
-
-        println!("║ {:15} │ {} │ {:12} │ {:15} │ {:15} │ {:8} ║",
-            if stats.name.len() > 15 { &stats.name[..15] } else { &stats.name },
-            status,
-            speed_str,
-            ip_short,
-            gw_short,
-            if stats.is_up { "Active" } else { "Idle" }
-        );
-
-        if stats.is_up {
-            total_sent += stats.bytes_sent;
-            total_recv += stats.bytes_recv;
-            total_pkt_sent += stats.packets_sent;
-            total_pkt_recv += stats.packets_recv;
-            total_speed += stats.speed_mbps;
-            active_count += 1;
+    if let Some(out) = ip_output {
+        let blocks = parse_ps_blocks(&String::from_utf8_lossy(&out.stdout));
+        if let Some(first) = blocks.first() {
+            if let Some(addr) = first.get("IPAddress") {
+                ip = addr.clone();
+            }
         }
     }
 
-    println!("╠════════════════════════════════════════════════════════════════════════════════════╣");
-    println!("║ TOTAL: {} active interfaces | {} Mbps combined speed                              ║", 
-        active_count, total_speed);
-    println!("║ TX: {} bytes ({} pkts) │ RX: {} bytes ({} pkts)                                    ║",
-        total_sent, total_pkt_sent, total_recv, total_pkt_recv);
-    println!("╚════════════════════════════════════════════════════════════════════════════════════╝");
+    // Get default gateway
+    let gw_output = Command::new("powershell")
+        .args(&[
+            "-NoProfile",
+            "-Command",
+            &format!(
+                "Get-NetRoute -InterfaceAlias '{}' -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue | Format-List NextHop",
+                adapter_name
+            ),
+        ])
+        .output()
+        .ok();
+
+    if let Some(out) = gw_output {
+        let blocks = parse_ps_blocks(&String::from_utf8_lossy(&out.stdout));
+        if let Some(first) = blocks.first() {
+            if let Some(gw) = first.get("NextHop") {
+                gateway = gw.clone();
+            }
+        }
+    }
+
+    (ip, gateway)
+}
+
+fn print_status(interfaces: &HashMap<String, InterfaceStats>) {
+    println!("BondLink Network Monitor v0.1.0");
+    println!("================================\n");
+
+    let mut total_speed = 0u32;
+    let mut active_count = 0;
+
+    // Sort interfaces by name
+    let mut sorted: Vec<_> = interfaces.iter().collect();
+    sorted.sort_by_key(|(name, _)| name.as_str());
+
+    for (_, stats) in sorted {
+        let status = if stats.is_up { "UP  " } else { "DOWN" };
+        println!("[{}] {} ({} Mbps)", status, stats.name, stats.speed_mbps);
+        println!(
+            "    IP: {} | GW: {} | MAC: {}",
+            if stats.ip.is_empty() {
+                "N/A"
+            } else {
+                &stats.ip
+            },
+            if stats.gateway.is_empty() {
+                "N/A"
+            } else {
+                &stats.gateway
+            },
+            if stats.mac.is_empty() {
+                "N/A"
+            } else {
+                &stats.mac
+            }
+        );
+
+        if stats.is_up {
+            total_speed += stats.speed_mbps;
+            active_count += 1;
+        }
+        println!();
+    }
+
+    println!(
+        "Total: {} active interfaces | {} Mbps combined speed",
+        active_count, total_speed
+    );
 }
 
 fn main() {
     loop {
-        print!("\x1B[2J\x1B[1;1H");  // Clear screen
+        print!("\x1B[2J\x1B[1;1H"); // Clear screen
         let interfaces = get_network_stats();
         print_status(&interfaces);
         std::thread::sleep(Duration::from_secs(2));
