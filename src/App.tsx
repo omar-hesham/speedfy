@@ -10,6 +10,7 @@ import { ServerSetupGenerator } from './components/ServerSetupGenerator';
 import { NetworkInterfacesPanel } from './components/NetworkInterfacesPanel';
 import { BandwidthCalculator } from './components/BandwidthCalculator';
 import { BondingExplainer } from './components/BondingExplainer';
+import { BondingStatusPanel } from './components/BondingStatusPanel';
 import { Language, NetworkInterfaceConfig } from './types';
 import { Zap, Cable, Wifi, Terminal, HelpCircle } from 'lucide-react';
 
@@ -123,6 +124,27 @@ export default function App() {
           <BondingExplainer
             language={language}
             onNavigateToSetup={() => setCurrentTab('server-setup')}
+          />
+        )}
+
+        {currentTab === 'bonding-status' && (
+          <BondingStatusPanel
+            language={language}
+            isConnected={false}
+            pathMetrics={{
+              ethernet: {
+                rttMs: ethernetConfig.latencyMs,
+                lossPercent: ethernetConfig.packetLossPercent,
+                kbps: ethernetConfig.nominalSpeedMbps * 1000,
+              },
+              wifi: {
+                rttMs: wifiConfig.latencyMs,
+                lossPercent: wifiConfig.packetLossPercent,
+                kbps: wifiConfig.nominalSpeedMbps * 1000,
+              },
+            }}
+            relayIp="203.0.113.10"
+            egressIp="198.51.100.1"
           />
         )}
       </main>
