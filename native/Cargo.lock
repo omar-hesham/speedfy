@@ -57,6 +57,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "bondlink-quic"
+version = "0.1.0"
+
+[[package]]
 name = "bondlink-relay"
 version = "0.1.0"
 dependencies = [

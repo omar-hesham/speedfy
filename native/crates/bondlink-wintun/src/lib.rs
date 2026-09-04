@@ -1,6 +1,8 @@
 use std::net::Ipv4Addr;
 use std::str::FromStr;
 
+pub const WINTUN_DLL: &[u8] = include_bytes!("../lib/amd64/wintun.dll");
+
 pub struct WintunConfig {
     pub adapter_name: String,
     pub tunnel_name: String,
@@ -35,6 +37,10 @@ impl WintunAdapter {
     pub fn config(&self) -> &WintunConfig {
         &self.config
     }
+
+    pub fn dll_bytes(&self) -> &[u8] {
+        WINTUN_DLL
+    }
 }
 
 #[cfg(test)]
@@ -50,6 +56,14 @@ mod tests {
         assert_eq!(config.tunnel_ip.to_string(), "10.73.0.2");
         assert_eq!(config.tunnel_netmask.to_string(), "255.255.255.0");
         assert_eq!(config.dns_server.to_string(), "10.73.0.1");
+    }
+
+    #[test]
+    fn dll_is_embedded() {
+        let adapter = WintunAdapter::new(WintunConfig::default());
+        let bytes = adapter.dll_bytes();
+        assert!(!bytes.is_empty());
+        assert!(bytes.len() > 1000);
     }
 
     #[test]

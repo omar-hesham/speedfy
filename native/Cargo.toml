@@ -5,6 +5,7 @@ members = [
     "crates/bondlink-service",
     "crates/bondlink-relay",
     "crates/bondlink-wintun",
+    "crates/bondlink-quic",
 ]
 resolver = "2"
 
