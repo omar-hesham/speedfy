@@ -1,0 +1,36 @@
+[package]
+name = "bondlink-client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow.workspace = true
+rcgen.workspace = true
+bytes.workspace = true
+quinn.workspace = true
+rustls.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber = "0.3"
+
+# Windows-specific
+wintun-bindings = "0.7"
+windows-sys = { version = "0.59", features = [
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Networking_WinSock",
+    "Win32_Foundation",
+    "Win32_System_IO",
+    "Win32_Security",
+    "Win32_System_Pipes",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Threading",
+] }
+
+[lib]
+name = "bondlink_client"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bondlink-client"
+path = "src/main.rs"
