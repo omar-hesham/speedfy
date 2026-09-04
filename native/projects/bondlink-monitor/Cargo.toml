@@ -1,0 +1,8 @@
+[package]
+name = "bondlink-monitor"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "bondlink-monitor"
+path = "src/main.rs"
