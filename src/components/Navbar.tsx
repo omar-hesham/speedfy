@@ -60,6 +60,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       id: 'explainer',
       label: isAr ? 'كيف يعمل الدمج؟' : 'How Bonding Works',
       icon: HelpCircle
+    },
+    {
+      id: 'bonding-status',
+      label: isAr ? 'حالة الدمج الأصلي' : 'Native Bonding',
+      icon: Zap,
+      highlight: true
     }
   ];
 
