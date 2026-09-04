@@ -4,6 +4,8 @@ use std::net::SocketAddr;
 pub const RELAY_HOST: &str = "84.8.105.228";
 pub const RELAY_PORT: u16 = 8443;
 
+pub mod wintun_adapter;
+
 pub struct ClientConfig {
     pub relay_addr: SocketAddr,
     pub tun_adapter_name: String,
