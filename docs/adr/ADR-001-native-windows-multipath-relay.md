@@ -1,4 +1,4 @@
-# ADR-001: Native Windows multipath tunnel through an Oracle relay
+# ADR-001: Native Windows multipath tunnel through a Windows VPS relay
 
 - **Status:** Proposed
 - **Decision owner:** Omar
@@ -8,7 +8,7 @@
 
 ## Context
 
-BondLink must carry all supported Windows IPv4 traffic across Ethernet and Wi-Fi, aggregate eligible traffic, survive path loss, and expose one Oracle public IPv4. The user explicitly rejected a required OpenWrt router, WSL instance, or client-side Linux VM.
+BondLink must carry all supported Windows IPv4 traffic across Ethernet and Wi-Fi, aggregate eligible traffic, survive path loss, and expose one public IPv4 from a user-owned Windows VPS. The user explicitly rejected a required OpenWrt router, WSL instance, or client-side Linux VM. The relay must also run Windows because the user's VPS is Windows.
 
 The current prototype distributes new proxy sockets and includes metric-tuning/OpenMPTCProuter templates. None provides the required native, full-tunnel Windows product boundary.
 
@@ -20,17 +20,17 @@ Adopt a **client–relay software-defined bonding gateway**:
 2. The service creates one QUIC connection per physical Internet path using a UDP socket with an explicit relay `/32` route, `IP_UNICAST_IF`, and source-address binding.
 3. Reliable QUIC streams carry session control; QUIC DATAGRAM carries inner IPv4 packets using a negotiated 1000..1280-byte tunnel MTU.
 4. A shared Rust core performs canonical bidirectional flow classification, mode-specific scheduling, bounded per-flow reordering, health detection, and metrics.
-5. A Rust Linux relay on Oracle terminates both paths, exchanges packets with a Linux TUN interface, runs the tunnel DNS forwarding boundary, and uses nftables masquerade for one public egress IPv4.
+5. A Rust Windows Service relay on the user's Windows VPS terminates both paths, exchanges packets with a Wintun adapter, runs the tunnel DNS forwarding boundary, and uses Windows NAT/routing for one public egress IPv4.
 6. An unprivileged React/Tauri UI and CLI communicate with the service through an ACL-protected local named pipe.
 7. Route, DNS, firewall, IPv6-block, and adapter changes are managed as an ordered, journaled, reversible transaction; relay host routes are verified before the virtual default route.
 
 ## Why this decision
 
-- Wintun satisfies the native Windows Layer-3 capture boundary.
+- Wintun satisfies the native Windows Layer-3 capture boundary on both client and relay.
 - Independent QUIC connections allow explicit binding to different Windows interfaces while reusing a mature encrypted transport and per-path congestion control.
 - QUIC DATAGRAM avoids TCP-over-TCP retransmission while carrying both inner TCP and UDP.
-- A remote relay is necessary to present one public egress IP and reconstruct the virtual tunnel.
-- Rust supports the Windows x64 client and both Oracle Linux x64/ARM64 targets from one core codebase.
+- A remote Windows VPS relay is necessary to present one public egress IP and reconstruct the virtual tunnel.
+- Rust supports both the Windows x64 client and the Windows x64/ARM64 relay from one core codebase.
 
 ## Modes and product semantics
 
@@ -38,7 +38,7 @@ Adopt a **client–relay software-defined bonding gateway**:
 - `aggregate`: more aggressive TCP striping; still no universal 100% throughput promise.
 - `low-latency`: pins each flow to the best healthy path and prioritizes failover; no aggregation or lower-ping claim for a single game flow.
 
-“All traffic supported” means that TCP, UDP, ICMP, and DNS can traverse the virtual IPv4 tunnel. It does not mean every flow is striped across both links.
+"All traffic supported" means that TCP, UDP, ICMP, and DNS can traverse the virtual IPv4 tunnel. It does not mean every flow is striped across both links.
 
 ## Alternatives considered
 
@@ -66,29 +66,33 @@ Adopt a **client–relay software-defined bonding gateway**:
 
 **Rejected.** Building cryptographic primitives or a new handshake is unnecessary and raises avoidable security risk. Any remaining BondLink envelope is application framing inside authenticated QUIC.
 
+### G. Linux relay on the Oracle VPS
+
+**Rejected.** The user's VPS is Windows. The relay must also run Windows to match the deployed environment.
+
 ## Consequences
 
 ### Positive
 
 - Native Windows UX with one virtual interface.
-- One public Oracle egress IPv4.
-- One data-plane codebase across Windows/Linux architectures.
+- One public egress IPv4 from the Windows VPS.
+- One data-plane codebase across all Windows architectures.
 - Mode-specific behavior that can be tested and described honestly.
 - Existing React UI can be retained after technical claims and privileged boundaries are corrected.
 
 ### Negative
 
 - This is a networking systems product, not a small extension to the current Node prototype.
-- Wintun, Windows routing, crash recovery, and installer signing require privileged integration testing.
+- Wintun, Windows routing, crash recovery, and installer signing require privileged integration testing on both client and relay.
 - Packet striping across asymmetric paths can increase reorder delay and harm inner TCP.
 - UDP/game traffic cannot be promised both lowest latency and bandwidth aggregation.
-- Oracle's smallest free AMD shape may cap public throughput below the combined home links.
+- The Windows VPS public throughput may cap below the combined home links depending on the VPS provider/shape.
 
 ### Operational
 
-- Oracle VM type must be discovered by the relay doctor; no architecture assumption is allowed.
-- OCI ingress configuration remains a manual, explicitly approved cloud action.
-- Windows and relay release artifacts must be signed and independently built for their targets.
+- Windows VPS type must be discovered by the relay doctor; no architecture assumption is allowed.
+- VPS ingress configuration remains a manual, explicitly approved action.
+- Windows client and relay release artifacts must be signed and independently built for their targets.
 
 ## Required validation before acceptance
 
@@ -96,7 +100,7 @@ The decision remains Proposed until the five disposable spikes in the Master Imp
 
 1. Wintun, ordered interface-pinned routing, leak policy, and crash-safe restoration.
 2. Two simultaneous interface-pinned QUIC DATAGRAM paths plus MTU/backpressure negotiation.
-3. Oracle relay capacity and architecture measurement.
+3. Windows VPS relay capacity and architecture measurement.
 4. Deterministic bidirectional scheduler/reorder impairment simulation.
 5. DNS and IPv6 leak-boundary verification.
 

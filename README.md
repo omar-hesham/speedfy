@@ -18,12 +18,12 @@ The proxy can distribute multiple proxy-aware connections. It does not capture e
 
 ## Planned native BondLink v1
 
-The reviewed planning direction is a native Windows client plus a user-owned Oracle Linux relay:
+The reviewed planning direction is a **native Windows client** plus a **user-owned Windows VPS relay**:
 
-- Wintun virtual IPv4 adapter;
-- privileged Rust Windows networking service;
-- two independently interface-pinned QUIC paths;
-- Oracle TUN/nftables relay with one public IPv4 egress;
+- Wintun virtual IPv4 adapter on both client and relay;
+- privileged Rust Windows networking service on both sides;
+- two independently interface-pinned QUIC DATAGRAM paths;
+- Windows VPS relay with one public IPv4 egress;
 - bounded, mode-aware scheduling and failover;
 - DNS/IPv6 leak controls and crash-safe network restoration;
 - React/Tauri desktop UI.
@@ -31,9 +31,36 @@ The reviewed planning direction is a native Windows client plus a user-owned Ora
 Planning documents:
 
 - [BondLink v1 Master Implementation Prompt](docs/BONDLINK_V1_MASTER_IMPLEMENTATION_PROMPT.md)
-- [ADR-001: Native Windows multipath tunnel through an Oracle relay](docs/adr/ADR-001-native-windows-multipath-relay.md)
+- [ADR-001: Native Windows multipath tunnel through a Windows VPS relay](docs/adr/ADR-001-native-windows-multipath-relay.md)
 
 Both documents remain **Draft / Proposed** until the planning PR is reviewed and merged. Runtime implementation must be developed in a separate branch and PR.
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────┐
+│ Windows Client                               │
+│  ┌─────────┐  ┌─────────┐  ┌──────────────┐ │
+│  │ Wintun  │  │ QUIC    │  │ Service      │ │
+│  │ Adapter │◄─┤ 2 paths │◄─┤ State Machine│ │
+│  └─────────┘  └─────────┘  └──────────────┘ │
+│       ▲                              │       │
+│       │                              ▼       │
+│  Ethernet/Wi-Fi              Named Pipe IPC   │
+└──────────────────────────────────────────────┘
+                    │ QUIC DATAGRAMs
+                    ▼
+┌──────────────────────────────────────────────┐
+│ Windows VPS Relay                            │
+│  ┌─────────┐  ┌─────────┐  ┌──────────────┐ │
+│  │ Wintun  │  │ QUIC    │  │ NAT +        │ │
+│  │ Adapter │◄─┤ Listener│◄─┤ Forwarding   │ │
+│  └─────────┘  └─────────┘  └──────────────┘ │
+│                                     │        │
+│                                     ▼        │
+│                              Public IPv4     │
+└──────────────────────────────────────────────┘
+```
 
 ## Run the current prototype
 
@@ -81,7 +108,7 @@ npm run build
 - Do not expose ports `3001` or `8888` to untrusted networks.
 - Route-metric changes require UAC and can interrupt connectivity; review diagnostics before accepting elevation.
 - Runtime logs under `logs/`, local environment files, generated builds, and agent metadata are ignored by Git.
-- Do not treat the current UI's historical “100% aggregation” wording as a verified product guarantee; correcting those claims is an implementation acceptance criterion.
+- Do not treat the current UI's historical "100% aggregation" wording as a verified product guarantee; correcting those claims is an implementation acceptance criterion.
 
 ## License
 

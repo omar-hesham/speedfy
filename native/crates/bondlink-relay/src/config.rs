@@ -3,7 +3,8 @@ use std::path::PathBuf;
 #[derive(Debug, Clone)]
 pub struct RelayConfig {
     pub relay_port: u16,
-    pub tun_device: String,
+    pub tun_adapter_name: String,
+    pub tun_tunnel_name: String,
     pub tun_subnet: String,
     pub client_tun_ip: String,
     pub relay_tun_ip: String,
@@ -16,13 +17,14 @@ impl Default for RelayConfig {
     fn default() -> Self {
         Self {
             relay_port: 8443,
-            tun_device: "bondlink0".to_string(),
+            tun_adapter_name: "BondLinkRelay".to_string(),
+            tun_tunnel_name: "BondLink Relay Tunnel".to_string(),
             tun_subnet: "10.73.0.0/24".to_string(),
             client_tun_ip: "10.73.0.2".to_string(),
             relay_tun_ip: "10.73.0.1".to_string(),
-            cert_path: PathBuf::from("/etc/bondlink/relay.crt"),
-            key_path: PathBuf::from("/etc/bondlink/relay.key"),
-            log_path: PathBuf::from("/var/log/bondlink/relay.log"),
+            cert_path: PathBuf::from(r"C:\ProgramData\BondLink\relay.crt"),
+            key_path: PathBuf::from(r"C:\ProgramData\BondLink\relay.key"),
+            log_path: PathBuf::from(r"C:\ProgramData\BondLink\relay.log"),
         }
     }
 }
@@ -33,10 +35,16 @@ impl RelayConfig {
             return Err("relay_port must be non-zero".to_string());
         }
         if !self.cert_path.exists() {
-            return Err(format!("certificate not found: {}", self.cert_path.display()));
+            return Err(format!(
+                "certificate not found: {}",
+                self.cert_path.display()
+            ));
         }
         if !self.key_path.exists() {
-            return Err(format!("private key not found: {}", self.key_path.display()));
+            return Err(format!(
+                "private key not found: {}",
+                self.key_path.display()
+            ));
         }
         Ok(())
     }
@@ -58,7 +66,8 @@ mod tests {
     fn default_config_has_required_defaults() {
         let config = RelayConfig::default();
         assert_eq!(config.relay_port, 8443);
-        assert_eq!(config.tun_device, "bondlink0");
+        assert_eq!(config.tun_adapter_name, "BondLinkRelay");
+        assert_eq!(config.tun_tunnel_name, "BondLink Relay Tunnel");
         assert_eq!(config.tun_subnet, "10.73.0.0/24");
     }
 
