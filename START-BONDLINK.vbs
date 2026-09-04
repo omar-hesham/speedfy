@@ -2,11 +2,13 @@
 ' Double-click to start everything
 Option Explicit
 
+Dim UAC
 Set UAC = CreateObject("Shell.Application")
 UAC.ShellExecute "wscript.exe", """" & WScript.ScriptFullName & """ //E:VBS", "", "runas", 1
 WScript.Quit
 
 ' After elevation, this part runs as Admin
+Dim WshShell, FSO
 Set WshShell = CreateObject("WScript.Shell")
 Set FSO = CreateObject("Scripting.FileSystemObject")
 
