@@ -1,10 +1,11 @@
 [package]
 name = "bondlink-client"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow.workspace = true
+rcgen.workspace = true
 bytes.workspace = true
 quinn.workspace = true
 rustls.workspace = true
