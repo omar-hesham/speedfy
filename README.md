@@ -18,12 +18,13 @@ The proxy can distribute multiple proxy-aware connections. It does not capture e
 
 ## Planned native BondLink v1
 
-The reviewed planning direction is a **native Windows client** plus a **user-owned Windows VPS relay**:
+The reviewed planning direction is a **native Windows client** plus a **user-owned Oracle Linux relay**:
 
-- Wintun virtual IPv4 adapter on both client and relay;
-- privileged Rust Windows networking service on both sides;
+- Wintun virtual IPv4 adapter on the client;
+- privileged Rust Windows networking service on the client;
 - two independently interface-pinned QUIC DATAGRAM paths;
-- Windows VPS relay with one public IPv4 egress;
+- Oracle Cloud Always Free VPS (Ampere A1 ARM64, Ubuntu) as relay;
+- Linux TUN + nftables relay with one public IPv4 egress;
 - bounded, mode-aware scheduling and failover;
 - DNS/IPv6 leak controls and crash-safe network restoration;
 - React/Tauri desktop UI.
@@ -31,7 +32,7 @@ The reviewed planning direction is a **native Windows client** plus a **user-own
 Planning documents:
 
 - [BondLink v1 Master Implementation Prompt](docs/BONDLINK_V1_MASTER_IMPLEMENTATION_PROMPT.md)
-- [ADR-001: Native Windows multipath tunnel through a Windows VPS relay](docs/adr/ADR-001-native-windows-multipath-relay.md)
+- [ADR-001: Native Windows multipath tunnel through an Oracle Linux relay](docs/adr/ADR-001-native-windows-multipath-relay.md)
 
 Both documents remain **Draft / Proposed** until the planning PR is reviewed and merged. Runtime implementation must be developed in a separate branch and PR.
 
@@ -51,10 +52,10 @@ Both documents remain **Draft / Proposed** until the planning PR is reviewed and
                     │ QUIC DATAGRAMs
                     ▼
 ┌──────────────────────────────────────────────┐
-│ Windows VPS Relay                            │
+│ Oracle Cloud Always Free VPS (Linux/Ubuntu)  │
 │  ┌─────────┐  ┌─────────┐  ┌──────────────┐ │
-│  │ Wintun  │  │ QUIC    │  │ NAT +        │ │
-│  │ Adapter │◄─┤ Listener│◄─┤ Forwarding   │ │
+│  │ Linux   │  │ QUIC    │  │ nftables     │ │
+│  │ TUN     │◄─┤ Listener│◄─┤ NAT/Forward  │ │
 │  └─────────┘  └─────────┘  └──────────────┘ │
 │                                     │        │
 │                                     ▼        │

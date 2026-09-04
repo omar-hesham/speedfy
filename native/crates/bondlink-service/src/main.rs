@@ -21,7 +21,6 @@ fn main() {
         Ok(()) => println!("Config validation: PASS\n"),
         Err(e) => {
             println!("Config validation: FAIL — {}\n", e);
-            println!("Please provide a valid configuration.");
             return;
         }
     }
