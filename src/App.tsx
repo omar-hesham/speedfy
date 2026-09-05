@@ -11,20 +11,21 @@ import { NetworkInterfacesPanel } from './components/NetworkInterfacesPanel';
 import { BandwidthCalculator } from './components/BandwidthCalculator';
 import { BondingExplainer } from './components/BondingExplainer';
 import { BondingStatusPanel } from './components/BondingStatusPanel';
+import BondingDashboard from './components/BondingDashboard';
 import { Language, NetworkInterfaceConfig } from './types';
-import { Zap, Cable, Wifi, Terminal, HelpCircle } from 'lucide-react';
+import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard } from 'lucide-react';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('ar');
-  const [currentTab, setCurrentTab] = useState<string>('speedtest');
+  const [currentTab, setCurrentTab] = useState<string>('dashboard');
 
   // Interface 1: Local Link / Ethernet
   const [ethernetConfig, setEthernetConfig] = useState<NetworkInterfaceConfig>({
     id: 'eth0',
     name: 'Ethernet Adapter',
     type: 'ethernet',
-    ipAddress: '192.168.1.100',
-    gateway: '192.168.1.1',
+    ipAddress: '192.168.8.20',
+    gateway: '192.168.8.1',
     subnetMask: '255.255.255.0',
     metric: 15,
     nominalSpeedMbps: 1000,
@@ -41,8 +42,8 @@ export default function App() {
     id: 'wlan0',
     name: 'Wi-Fi Adapter',
     type: 'wifi',
-    ipAddress: '192.168.2.100',
-    gateway: '192.168.2.1',
+    ipAddress: '192.168.1.22',
+    gateway: '192.168.1.1',
     subnetMask: '255.255.255.0',
     metric: 15,
     nominalSpeedMbps: 702,
@@ -89,6 +90,10 @@ export default function App() {
 
       {/* Main App Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        {currentTab === 'dashboard' && (
+          <BondingDashboard language={language} />
+        )}
+
         {currentTab === 'speedtest' && (
           <SpeedTestEngine
             language={language}

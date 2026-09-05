@@ -1,0 +1,200 @@
+[2J[1;1HBondLink Network Monitor v0.1.0
+================================
+
+[UP  ] Ethernet 2 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: VirtualBox Host-Only Ethernet Adapter
+[DOWN] Ethernet - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] VMware Network Adapter VMnet8 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet8
+[UP  ] vEthernet (Ethernet 2) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #5
+[UP  ] Wi-Fi - 325 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] Ethernet 3 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: TP-LINK Gigabit Ethernet USB Adapter
+[UP  ] vEthernet (Ethernet 3) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #6
+[UP  ] vEthernet (Wi-Fi) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] VMware Network Adapter VMnet1 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet1
+[UP  ] vEthernet (Default Switch) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter
+[UP  ] vEthernet (Ethernet) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #2
+[UP  ] vEthernet (VMware Network ) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] vEthernet (WSL) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] vEthernet (VMware Network ) 2 - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] Local Area Connection* 10 - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Microsoft Wi-Fi Direct Virtual Adapter #2
+
+Total: 14 active | 2077334867 Mbps combined speed
+[2J[1;1HBondLink Network Monitor v0.1.0
+================================
+
+[UP  ] Ethernet 3 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: TP-LINK Gigabit Ethernet USB Adapter
+[UP  ] vEthernet (Ethernet) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #2
+[UP  ] vEthernet (Wi-Fi) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[DOWN] Ethernet - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] vEthernet (WSL) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] Wi-Fi - 520 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] Local Area Connection* 10 - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Microsoft Wi-Fi Direct Virtual Adapter #2
+[UP  ] vEthernet (VMware Network ) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] vEthernet (Ethernet 3) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #6
+[UP  ] VMware Network Adapter VMnet1 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet1
+[UP  ] Ethernet 2 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: VirtualBox Host-Only Ethernet Adapter
+[UP  ] vEthernet (VMware Network ) 2 - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] vEthernet (Default Switch) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter
+[UP  ] vEthernet (Ethernet 2) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #5
+[UP  ] VMware Network Adapter VMnet8 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet8
+
+Total: 14 active | 2077335062 Mbps combined speed
+[2J[1;1HBondLink Network Monitor v0.1.0
+================================
+
+[UP  ] vEthernet (VMware Network ) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] VMware Network Adapter VMnet1 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet1
+[UP  ] Ethernet 2 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: VirtualBox Host-Only Ethernet Adapter
+[UP  ] vEthernet (VMware Network ) 2 - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] vEthernet (Ethernet 2) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #5
+[UP  ] vEthernet (Ethernet) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #2
+[UP  ] vEthernet (Default Switch) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter
+[UP  ] Ethernet 3 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: TP-LINK Gigabit Ethernet USB Adapter
+[UP  ] VMware Network Adapter VMnet8 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet8
+[UP  ] vEthernet (Ethernet 3) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #6
+[UP  ] Wi-Fi - 520 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] vEthernet (Wi-Fi) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] Local Area Connection* 10 - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Microsoft Wi-Fi Direct Virtual Adapter #2
+[UP  ] vEthernet (WSL) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[DOWN] Ethernet - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+
+Total: 14 active | 2077335062 Mbps combined speed
+[2J[1;1HBondLink Network Monitor v0.1.0
+================================
+
+[UP  ] vEthernet (VMware Network ) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[UP  ] vEthernet (Wi-Fi) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] VMware Network Adapter VMnet1 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet1
+[UP  ] Ethernet 3 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: TP-LINK Gigabit Ethernet USB Adapter
+[UP  ] vEthernet (WSL) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] Ethernet 2 - 1000 Mbps
+    IP:  | Gateway: 
+    MAC: VirtualBox Host-Only Ethernet Adapter
+[UP  ] VMware Network Adapter VMnet8 - 100 Mbps
+    IP:  | Gateway: 
+    MAC: VMware Virtual Ethernet Adapter for VMnet8
+[UP  ] Wi-Fi - 433 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #7
+[UP  ] vEthernet (Ethernet) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #2
+[UP  ] vEthernet (Ethernet 2) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #5
+[UP  ] vEthernet (Ethernet 3) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #6
+[UP  ] vEthernet (Default Switch) - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter
+[UP  ] vEthernet (VMware Network ) 2 - 10000 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #4
+[DOWN] Ethernet - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Hyper-V Virtual Ethernet Adapter #8
+[UP  ] Local Area Connection* 10 - 2077252342 Mbps
+    IP:  | Gateway: 
+    MAC: Microsoft Wi-Fi Direct Virtual Adapter #2
+
+Total: 14 active | 2077334975 Mbps combined speed

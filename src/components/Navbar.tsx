@@ -36,6 +36,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     {
+      id: 'dashboard',
+      label: isAr ? 'لوحة التحكم' : 'Dashboard',
+      icon: LayoutDashboard,
+      highlight: true
+    },
+    {
       id: 'speedtest',
       label: isAr ? 'اختبار السرعة المجمعة' : 'Combined Speedtest',
       icon: Gauge
