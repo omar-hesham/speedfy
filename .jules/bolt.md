@@ -1,0 +1,3 @@
+## 2026-09-05 - Lazy Loading Tab Components
+**Learning:** React lazy loading is very effective at splitting monolithic React components. In a React app, when multiple heavy views/tabs are imported at the top-level route and conditionally rendered based on a state (e.g. `currentTab === 'dashboard'`), this results in a huge initial chunk size because Webpack/Vite assumes all these top-level views are immediately needed for the initial route bundle. The best way to reduce the initial load is to use React.lazy.
+**Action:** When working on apps with a large single entry point that renders multiple complex tabs or subviews conditionally, always use `React.lazy` combined with `React.Suspense` to load them asynchronously and split the main bundle.
