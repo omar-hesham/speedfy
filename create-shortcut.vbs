@@ -1,28 +1,34 @@
-' Create BondLink Shortcut on Desktop
-' Run this once to create the shortcut
+' Create BondLink Shortcut on Desktop (PowerShell version)
 Set WshShell = CreateObject("WScript.Shell")
 Set FSO = CreateObject("Scripting.FileSystemObject")
 
 Dim scriptPath
 scriptPath = FSO.GetParentFolderName(WScript.ScriptFullName)
 
-Dim vbsPath
-vbsPath = scriptPath & "\START-BONDLINK.vbs"
+Dim psPath
+psPath = scriptPath & "\START-BONDLINK.ps1"
 
 Dim desktopPath
 desktopPath = WshShell.SpecialFolders("Desktop")
+
+' Delete old shortcut if exists
+Dim oldShortcut
+oldShortcut = desktopPath & "\BondLink.lnk"
+If FSO.FileExists(oldShortcut) Then
+    FSO.DeleteFile oldShortcut
+End If
 
 Dim shortcutPath
 shortcutPath = desktopPath & "\BondLink.lnk"
 
 Set shortcut = WshShell.CreateShortcut(shortcutPath)
-shortcut.TargetPath = "wscript.exe"
-shortcut.Arguments = """" & vbsPath & """"
+shortcut.TargetPath = "powershell.exe"
+shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File """ & psPath & """"
 shortcut.WorkingDirectory = scriptPath
-shortcut.WindowStyle = 7 ' Minimized
-shortcut.IconLocation = "shell32.dll,13"
+shortcut.WindowStyle = 1
+shortcut.IconLocation = "powershell.exe,0"
 shortcut.Description = "BondLink v1.0 - Multi-WAN Speed Bonding"
 shortcut.Save
 
-WScript.Echo "Shortcut created: " & shortcutPath
+WScript.Echo "Shortcut updated: " & shortcutPath
 WScript.Echo "Double-click the BondLink icon on your Desktop to start."

@@ -136,8 +136,8 @@ async fn main() {
         }
     });
 
-    let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
-    info!("BondLink API server listening on http://127.0.0.1:8080");
+    let listener = TcpListener::bind("127.0.0.1:18443").await.unwrap();
+    info!("BondLink API server listening on http://127.0.0.1:18443");
     info!("Dashboard: http://localhost:3000");
     info!("Press Ctrl+C to quit");
 

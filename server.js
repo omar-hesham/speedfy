@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const CLIENT_BASE = 'http://127.0.0.1:8080';
+const CLIENT_BASE = 'http://127.0.0.1:18443';
 
 // Proxy to bondlink-client
 const proxy = async (req, res, method) => {
@@ -37,7 +37,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 47892;
 app.listen(PORT, () => {
   console.log(`BondLink Dashboard proxy running on http://localhost:${PORT}`);
   console.log(`BondLink client expected at ${CLIENT_BASE}`);
