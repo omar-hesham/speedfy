@@ -9,7 +9,8 @@ import {
   Wifi, 
   Cable, 
   Zap, 
-  Languages 
+  Languages,
+  LayoutDashboard
 } from 'lucide-react';
 import { Language } from '../types';
 
