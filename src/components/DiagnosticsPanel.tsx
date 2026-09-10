@@ -59,10 +59,14 @@ export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
     [ethernetConfig.ipAddress, wifiConfig.ipAddress]
   );
 
-  const latestDiagnosis = useMemo(
-    () => [...events].reverse().find(event => event.diagnosis)?.diagnosis,
-    [events]
-  );
+  const latestDiagnosis = useMemo(() => {
+    for (let i = events.length - 1; i >= 0; i--) {
+      if (events[i].diagnosis) {
+        return events[i].diagnosis;
+      }
+    }
+    return undefined;
+  }, [events]);
 
   useEffect(() => {
     let isMounted = true;
@@ -133,8 +137,13 @@ export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
     }
   };
 
-  const latestEvents = [...events].reverse().slice(0, 12);
-  const hasWarnings = latestEvents.some(event => event.level === 'warn' || event.level === 'error');
+  const latestEvents = useMemo(() => {
+    return events.slice(-12).reverse();
+  }, [events]);
+
+  const hasWarnings = useMemo(() => {
+    return latestEvents.some(event => event.level === 'warn' || event.level === 'error');
+  }, [latestEvents]);
 
   return (
     <div className="rounded-3xl border border-slate-800/80 bg-slate-900/50 p-5 backdrop-blur-xl shadow-xl shadow-black/20">
