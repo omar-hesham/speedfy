@@ -19,7 +19,7 @@ import {
   Server
 } from 'lucide-react';
 
-const API_BASE = 'http://127.0.0.1:8080';
+const API_BASE = 'http://127.0.0.1:18443';
 
 interface InterfaceStats {
   ip: string;
