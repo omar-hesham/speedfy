@@ -43,7 +43,7 @@ const summarizeDetails = (details: unknown) => {
   }
 };
 
-export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
+export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = React.memo(({
   language,
   ethernetConfig,
   wifiConfig
@@ -236,4 +236,6 @@ export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
       </div>
     </div>
   );
-};
+});
+
+DiagnosticsPanel.displayName = 'DiagnosticsPanel';
