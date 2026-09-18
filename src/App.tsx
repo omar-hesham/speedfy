@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Navbar } from './components/Navbar';
-import { SpeedTestEngine } from './components/SpeedTestEngine';
-import { ServerSetupGenerator } from './components/ServerSetupGenerator';
-import { NetworkInterfacesPanel } from './components/NetworkInterfacesPanel';
-import { BandwidthCalculator } from './components/BandwidthCalculator';
-import { BondingExplainer } from './components/BondingExplainer';
-import { BondingStatusPanel } from './components/BondingStatusPanel';
-import BondingDashboard from './components/BondingDashboard';
 import { Language, NetworkInterfaceConfig } from './types';
-import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard } from 'lucide-react';
+import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard, Loader2 } from 'lucide-react';
+
+const SpeedTestEngine = lazy(() => import('./components/SpeedTestEngine').then(m => ({ default: m.SpeedTestEngine })));
+const ServerSetupGenerator = lazy(() => import('./components/ServerSetupGenerator').then(m => ({ default: m.ServerSetupGenerator })));
+const NetworkInterfacesPanel = lazy(() => import('./components/NetworkInterfacesPanel').then(m => ({ default: m.NetworkInterfacesPanel })));
+const BandwidthCalculator = lazy(() => import('./components/BandwidthCalculator').then(m => ({ default: m.BandwidthCalculator })));
+const BondingExplainer = lazy(() => import('./components/BondingExplainer').then(m => ({ default: m.BondingExplainer })));
+const BondingStatusPanel = lazy(() => import('./components/BondingStatusPanel').then(m => ({ default: m.BondingStatusPanel })));
+const BondingDashboard = lazy(() => import('./components/BondingDashboard'));
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('ar');
@@ -90,6 +91,12 @@ export default function App() {
 
       {/* Main App Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <Suspense fallback={
+          <div className="w-full h-64 flex flex-col items-center justify-center text-cyan-500/70">
+            <Loader2 className="w-8 h-8 animate-spin mb-4" />
+            <p className="text-sm font-medium">{isAr ? 'جاري التحميل...' : 'Loading module...'}</p>
+          </div>
+        }>
         {currentTab === 'dashboard' && (
           <BondingDashboard language={language} />
         )}
@@ -152,6 +159,7 @@ export default function App() {
             egressIp="198.51.100.1"
           />
         )}
+        </Suspense>
       </main>
 
       {/* Footer */}
