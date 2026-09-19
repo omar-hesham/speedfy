@@ -43,11 +43,12 @@ const summarizeDetails = (details: unknown) => {
   }
 };
 
-export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
+// ⚡ Bolt: Wrapped DiagnosticsPanel with React.memo() to prevent unnecessary re-renders when parent components update.
+export const DiagnosticsPanel = React.memo(({
   language,
   ethernetConfig,
   wifiConfig
-}) => {
+}: DiagnosticsPanelProps) => {
   const isAr = language === 'ar';
   const [events, setEvents] = useState<DiagnosticEvent[]>([]);
   const [status, setStatus] = useState<'connecting' | 'live' | 'offline'>('connecting');
@@ -236,4 +237,4 @@ export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
       </div>
     </div>
   );
-};
+});
