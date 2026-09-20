@@ -1,0 +1,5 @@
+<<<<<<< SEARCH
+import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard } from 'lucide-react';
+=======
+import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard, Loader2 } from 'lucide-react';
+>>>>>>> REPLACE

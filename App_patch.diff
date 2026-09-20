@@ -1,0 +1,133 @@
+<<<<<<< SEARCH
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        {currentTab === 'dashboard' && (
+          <BondingDashboard language={language} />
+        )}
+
+        {currentTab === 'speedtest' && (
+          <SpeedTestEngine
+            language={language}
+            ethernetConfig={ethernetConfig}
+            wifiConfig={wifiConfig}
+            onNavigateToSetup={() => setCurrentTab('server-setup')}
+          />
+        )}
+
+        {currentTab === 'server-setup' && (
+          <ServerSetupGenerator
+            language={language}
+            ethernetConfig={ethernetConfig}
+            wifiConfig={wifiConfig}
+          />
+        )}
+
+        {currentTab === 'interfaces' && (
+          <NetworkInterfacesPanel
+            language={language}
+          />
+        )}
+
+        {currentTab === 'calculator' && (
+          <BandwidthCalculator
+            language={language}
+            ethSpeed={ethernetConfig.nominalSpeedMbps}
+            wifiSpeed={wifiConfig.nominalSpeedMbps}
+          />
+        )}
+
+        {currentTab === 'explainer' && (
+          <BondingExplainer
+            language={language}
+            onNavigateToSetup={() => setCurrentTab('server-setup')}
+          />
+        )}
+
+        {currentTab === 'bonding-status' && (
+          <BondingStatusPanel
+            language={language}
+            isConnected={false}
+            pathMetrics={{
+              ethernet: {
+                rttMs: ethernetConfig.latencyMs,
+                lossPercent: ethernetConfig.packetLossPercent,
+                kbps: ethernetConfig.nominalSpeedMbps * 1000,
+              },
+              wifi: {
+                rttMs: wifiConfig.latencyMs,
+                lossPercent: wifiConfig.packetLossPercent,
+                kbps: wifiConfig.nominalSpeedMbps * 1000,
+              },
+            }}
+            relayIp="203.0.113.10"
+            egressIp="198.51.100.1"
+          />
+        )}
+      </main>
+=======
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <React.Suspense fallback={<div className="flex justify-center items-center h-full p-12"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>}>
+          {currentTab === 'dashboard' && (
+            <BondingDashboard language={language} />
+          )}
+
+          {currentTab === 'speedtest' && (
+            <SpeedTestEngine
+              language={language}
+              ethernetConfig={ethernetConfig}
+              wifiConfig={wifiConfig}
+              onNavigateToSetup={() => setCurrentTab('server-setup')}
+            />
+          )}
+
+          {currentTab === 'server-setup' && (
+            <ServerSetupGenerator
+              language={language}
+              ethernetConfig={ethernetConfig}
+              wifiConfig={wifiConfig}
+            />
+          )}
+
+          {currentTab === 'interfaces' && (
+            <NetworkInterfacesPanel
+              language={language}
+            />
+          )}
+
+          {currentTab === 'calculator' && (
+            <BandwidthCalculator
+              language={language}
+              ethSpeed={ethernetConfig.nominalSpeedMbps}
+              wifiSpeed={wifiConfig.nominalSpeedMbps}
+            />
+          )}
+
+          {currentTab === 'explainer' && (
+            <BondingExplainer
+              language={language}
+              onNavigateToSetup={() => setCurrentTab('server-setup')}
+            />
+          )}
+
+          {currentTab === 'bonding-status' && (
+            <BondingStatusPanel
+              language={language}
+              isConnected={false}
+              pathMetrics={{
+                ethernet: {
+                  rttMs: ethernetConfig.latencyMs,
+                  lossPercent: ethernetConfig.packetLossPercent,
+                  kbps: ethernetConfig.nominalSpeedMbps * 1000,
+                },
+                wifi: {
+                  rttMs: wifiConfig.latencyMs,
+                  lossPercent: wifiConfig.packetLossPercent,
+                  kbps: wifiConfig.nominalSpeedMbps * 1000,
+                },
+              }}
+              relayIp="203.0.113.10"
+              egressIp="198.51.100.1"
+            />
+          )}
+        </React.Suspense>
+      </main>
+>>>>>>> REPLACE
