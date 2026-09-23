@@ -1,3 +1,6 @@
 ## 2025-03-01 - Avoid Full Array Cloning in High-Frequency React Re-renders
 **Learning:** Using `[...array].reverse()` directly inside render functions or `useMemo` blocks with large dependencies (like high-frequency `EventSource` live streams) causes unnecessary GC pressure and performance bottlenecks.
 **Action:** Use native reverse `for` loops for searching, and slice only the required elements before reversing (`array.slice(-N).reverse()`) wrapped in `useMemo` to optimize rendering performance in fast-updating components.
+## 2023-10-25 - React.lazy with Named Exports in Vite
+**Learning:** When applying route-based code splitting using `React.lazy()` for components with named exports (which is common in this codebase's components like `SpeedTestEngine`), the standard `import()` syntax fails because React expects a `default` export.
+**Action:** Use the promise chain pattern: `React.lazy(() => import('./path').then(m => ({ default: m.ComponentName })))` to map the named export to a default object for React.

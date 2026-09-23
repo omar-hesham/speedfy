@@ -5,13 +5,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
-import { SpeedTestEngine } from './components/SpeedTestEngine';
-import { ServerSetupGenerator } from './components/ServerSetupGenerator';
-import { NetworkInterfacesPanel } from './components/NetworkInterfacesPanel';
-import { BandwidthCalculator } from './components/BandwidthCalculator';
-import { BondingExplainer } from './components/BondingExplainer';
-import { BondingStatusPanel } from './components/BondingStatusPanel';
-import BondingDashboard from './components/BondingDashboard';
+const SpeedTestEngine = React.lazy(() => import('./components/SpeedTestEngine').then(m => ({ default: m.SpeedTestEngine })));
+const ServerSetupGenerator = React.lazy(() => import('./components/ServerSetupGenerator').then(m => ({ default: m.ServerSetupGenerator })));
+const NetworkInterfacesPanel = React.lazy(() => import('./components/NetworkInterfacesPanel').then(m => ({ default: m.NetworkInterfacesPanel })));
+const BandwidthCalculator = React.lazy(() => import('./components/BandwidthCalculator').then(m => ({ default: m.BandwidthCalculator })));
+const BondingExplainer = React.lazy(() => import('./components/BondingExplainer').then(m => ({ default: m.BondingExplainer })));
+const BondingStatusPanel = React.lazy(() => import('./components/BondingStatusPanel').then(m => ({ default: m.BondingStatusPanel })));
+const BondingDashboard = React.lazy(() => import('./components/BondingDashboard'));
 import { Language, NetworkInterfaceConfig } from './types';
 import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard } from 'lucide-react';
 
@@ -90,6 +90,7 @@ export default function App() {
 
       {/* Main App Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <React.Suspense fallback={<div className="flex h-64 items-center justify-center text-slate-400">Loading...</div>}>
         {currentTab === 'dashboard' && (
           <BondingDashboard language={language} />
         )}
@@ -152,6 +153,7 @@ export default function App() {
             egressIp="198.51.100.1"
           />
         )}
+        </React.Suspense>
       </main>
 
       {/* Footer */}
