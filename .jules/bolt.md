@@ -1,3 +1,6 @@
 ## 2025-03-01 - Avoid Full Array Cloning in High-Frequency React Re-renders
 **Learning:** Using `[...array].reverse()` directly inside render functions or `useMemo` blocks with large dependencies (like high-frequency `EventSource` live streams) causes unnecessary GC pressure and performance bottlenecks.
 **Action:** Use native reverse `for` loops for searching, and slice only the required elements before reversing (`array.slice(-N).reverse()`) wrapped in `useMemo` to optimize rendering performance in fast-updating components.
+## 2024-09-26 - Route-based Code Splitting
+**Learning:** The React app relies heavily on conditionally rendering distinct tab views. By default, all tabs (and their heavy dependencies like `recharts` in `SpeedTestEngine`) are imported synchronously. This leads to a substantial single bundle (~703kB). Using `React.lazy()` for route-based code splitting works perfectly but requires special care for named exports.
+**Action:** When lazy-loading React components in this codebase, assume they might use named exports rather than default exports. Use the pattern `React.lazy(() => import('./path').then(m => ({ default: m.ComponentName })))` to avoid runtime import errors.
