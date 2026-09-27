@@ -43,11 +43,14 @@ const summarizeDetails = (details: unknown) => {
   }
 };
 
-export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+// The parent component (App.tsx / BondingDashboard.tsx) updates state frequently,
+// but DiagnosticsPanel only depends on static configurations (ethernetConfig, wifiConfig, language).
+export const DiagnosticsPanel = React.memo(({
   language,
   ethernetConfig,
   wifiConfig
-}) => {
+}: DiagnosticsPanelProps) => {
   const isAr = language === 'ar';
   const [events, setEvents] = useState<DiagnosticEvent[]>([]);
   const [status, setStatus] = useState<'connecting' | 'live' | 'offline'>('connecting');
@@ -236,4 +239,4 @@ export const DiagnosticsPanel: React.FC<DiagnosticsPanelProps> = ({
       </div>
     </div>
   );
-};
+});
