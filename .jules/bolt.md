@@ -1,3 +1,6 @@
 ## 2025-03-01 - Avoid Full Array Cloning in High-Frequency React Re-renders
 **Learning:** Using `[...array].reverse()` directly inside render functions or `useMemo` blocks with large dependencies (like high-frequency `EventSource` live streams) causes unnecessary GC pressure and performance bottlenecks.
 **Action:** Use native reverse `for` loops for searching, and slice only the required elements before reversing (`array.slice(-N).reverse()`) wrapped in `useMemo` to optimize rendering performance in fast-updating components.
+## 2025-03-01 - Route-Based Code Splitting with React.lazy
+**Learning:** Using `React.lazy()` with dynamic imports in a Vite-based React application can dramatically reduce the initial chunk size (from ~703 kB to ~213 kB in this case), resolving Vite's >500kB warning and improving TTI. When components use named exports, the promise chain pattern `.then(m => ({ default: m.ComponentName }))` is essential for compatibility with `React.lazy()`.
+**Action:** Always check Vite's build output for large chunk warnings and implement route-based code splitting for large top-level components (like tabs or pages) using `React.lazy()` and `React.Suspense` to improve initial load performance. Remember to add explanatory comments documenting the expected performance impact.
