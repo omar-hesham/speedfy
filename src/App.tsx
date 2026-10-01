@@ -3,17 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Navbar } from './components/Navbar';
-import { SpeedTestEngine } from './components/SpeedTestEngine';
-import { ServerSetupGenerator } from './components/ServerSetupGenerator';
-import { NetworkInterfacesPanel } from './components/NetworkInterfacesPanel';
-import { BandwidthCalculator } from './components/BandwidthCalculator';
-import { BondingExplainer } from './components/BondingExplainer';
-import { BondingStatusPanel } from './components/BondingStatusPanel';
-import BondingDashboard from './components/BondingDashboard';
 import { Language, NetworkInterfaceConfig } from './types';
 import { Zap, Cable, Wifi, Terminal, HelpCircle, LayoutDashboard } from 'lucide-react';
+
+// ⚡ Bolt: Code Splitting via React.lazy
+// 💡 What: Replaced static imports with React.lazy for route/tab components.
+// 🎯 Why: Splits the main bundle, loading JavaScript only when the tab is visited.
+// 📊 Impact: Significantly reduces initial load size.
+const SpeedTestEngine = lazy(() => import('./components/SpeedTestEngine').then(m => ({ default: m.SpeedTestEngine })));
+const ServerSetupGenerator = lazy(() => import('./components/ServerSetupGenerator').then(m => ({ default: m.ServerSetupGenerator })));
+const NetworkInterfacesPanel = lazy(() => import('./components/NetworkInterfacesPanel').then(m => ({ default: m.NetworkInterfacesPanel })));
+const BandwidthCalculator = lazy(() => import('./components/BandwidthCalculator').then(m => ({ default: m.BandwidthCalculator })));
+const BondingExplainer = lazy(() => import('./components/BondingExplainer').then(m => ({ default: m.BondingExplainer })));
+const BondingStatusPanel = lazy(() => import('./components/BondingStatusPanel').then(m => ({ default: m.BondingStatusPanel })));
+const BondingDashboard = lazy(() => import('./components/BondingDashboard'));
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('ar');
@@ -90,68 +95,70 @@ export default function App() {
 
       {/* Main App Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        {currentTab === 'dashboard' && (
-          <BondingDashboard language={language} />
-        )}
+        <Suspense fallback={<div className="flex items-center justify-center p-12 text-cyan-400"><div className="animate-pulse">Loading...</div></div>}>
+          {currentTab === 'dashboard' && (
+            <BondingDashboard language={language} />
+          )}
 
-        {currentTab === 'speedtest' && (
-          <SpeedTestEngine
-            language={language}
-            ethernetConfig={ethernetConfig}
-            wifiConfig={wifiConfig}
-            onNavigateToSetup={() => setCurrentTab('server-setup')}
-          />
-        )}
+          {currentTab === 'speedtest' && (
+            <SpeedTestEngine
+              language={language}
+              ethernetConfig={ethernetConfig}
+              wifiConfig={wifiConfig}
+              onNavigateToSetup={() => setCurrentTab('server-setup')}
+            />
+          )}
 
-        {currentTab === 'server-setup' && (
-          <ServerSetupGenerator
-            language={language}
-            ethernetConfig={ethernetConfig}
-            wifiConfig={wifiConfig}
-          />
-        )}
+          {currentTab === 'server-setup' && (
+            <ServerSetupGenerator
+              language={language}
+              ethernetConfig={ethernetConfig}
+              wifiConfig={wifiConfig}
+            />
+          )}
 
-        {currentTab === 'interfaces' && (
-          <NetworkInterfacesPanel
-            language={language}
-          />
-        )}
+          {currentTab === 'interfaces' && (
+            <NetworkInterfacesPanel
+              language={language}
+            />
+          )}
 
-        {currentTab === 'calculator' && (
-          <BandwidthCalculator
-            language={language}
-            ethSpeed={ethernetConfig.nominalSpeedMbps}
-            wifiSpeed={wifiConfig.nominalSpeedMbps}
-          />
-        )}
+          {currentTab === 'calculator' && (
+            <BandwidthCalculator
+              language={language}
+              ethSpeed={ethernetConfig.nominalSpeedMbps}
+              wifiSpeed={wifiConfig.nominalSpeedMbps}
+            />
+          )}
 
-        {currentTab === 'explainer' && (
-          <BondingExplainer
-            language={language}
-            onNavigateToSetup={() => setCurrentTab('server-setup')}
-          />
-        )}
+          {currentTab === 'explainer' && (
+            <BondingExplainer
+              language={language}
+              onNavigateToSetup={() => setCurrentTab('server-setup')}
+            />
+          )}
 
-        {currentTab === 'bonding-status' && (
-          <BondingStatusPanel
-            language={language}
-            isConnected={false}
-            pathMetrics={{
-              ethernet: {
-                rttMs: ethernetConfig.latencyMs,
-                lossPercent: ethernetConfig.packetLossPercent,
-                kbps: ethernetConfig.nominalSpeedMbps * 1000,
-              },
-              wifi: {
-                rttMs: wifiConfig.latencyMs,
-                lossPercent: wifiConfig.packetLossPercent,
-                kbps: wifiConfig.nominalSpeedMbps * 1000,
-              },
-            }}
-            relayIp="203.0.113.10"
-            egressIp="198.51.100.1"
-          />
-        )}
+          {currentTab === 'bonding-status' && (
+            <BondingStatusPanel
+              language={language}
+              isConnected={false}
+              pathMetrics={{
+                ethernet: {
+                  rttMs: ethernetConfig.latencyMs,
+                  lossPercent: ethernetConfig.packetLossPercent,
+                  kbps: ethernetConfig.nominalSpeedMbps * 1000,
+                },
+                wifi: {
+                  rttMs: wifiConfig.latencyMs,
+                  lossPercent: wifiConfig.packetLossPercent,
+                  kbps: wifiConfig.nominalSpeedMbps * 1000,
+                },
+              }}
+              relayIp="203.0.113.10"
+              egressIp="198.51.100.1"
+            />
+          )}
+        </Suspense>
       </main>
 
       {/* Footer */}
