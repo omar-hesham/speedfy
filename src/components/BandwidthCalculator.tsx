@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Calculator, 
   Clock, 
@@ -51,12 +51,14 @@ export const BandwidthCalculator: React.FC<BandwidthCalculatorProps> = ({
     return { hours, minutes, seconds, formatted: `${seconds}s` };
   };
 
-  const fileWorkloads = [
+  // ⚡ Bolt Optimization: Memoize the fileWorkloads array to avoid recreating it on every render
+  // (which happens frequently here due to slider state updates).
+  const fileWorkloads = useMemo(() => [
     { name: isAr ? 'فيلم Full HD (حجم 4 جيجابايت)' : 'Full HD Movie (4 GB)', sizeGb: 4, icon: Film },
     { name: isAr ? 'تحديث لعبة متوسطة (15 جيجابايت)' : 'Mid Game Patch (15 GB)', sizeGb: 15, icon: DownloadCloud },
     { name: isAr ? 'لعبة ضخمة AAA (حجم 60 جيجابايت)' : 'AAA Game (60 GB)', sizeGb: 60, icon: Gamepad2 },
     { name: isAr ? 'نسخة احتياطية / لعبة 4K (120 جيجابايت)' : 'Large 4K Backup (120 GB)', sizeGb: 120, icon: HardDrive }
-  ];
+  ], [isAr]);
 
   return (
     <div className="space-y-6">
