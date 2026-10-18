@@ -13,13 +13,14 @@ interface BondingStatusPanelProps {
   egressIp: string;
 }
 
-export const BondingStatusPanel: React.FC<BondingStatusPanelProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const BondingStatusPanel = React.memo(({
   language,
   isConnected,
   pathMetrics,
   relayIp,
   egressIp,
-}) => {
+}: BondingStatusPanelProps) => {
   const isAr = language === 'ar';
   const eth = pathMetrics.ethernet;
   const wifi = pathMetrics.wifi;
@@ -119,4 +120,4 @@ export const BondingStatusPanel: React.FC<BondingStatusPanelProps> = ({
       </div>
     </div>
   );
-};
+});

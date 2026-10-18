@@ -17,9 +17,10 @@ interface NetworkInterfacesPanelProps {
   language: Language;
 }
 
-export const NetworkInterfacesPanel: React.FC<NetworkInterfacesPanelProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const NetworkInterfacesPanel = React.memo(({
   language,
-}) => {
+}: NetworkInterfacesPanelProps) => {
   const isAr = language === 'ar';
   const [isLoading, setIsLoading] = useState(false);
   const [proxyRunning, setProxyRunning] = useState(false);
@@ -222,4 +223,4 @@ export const NetworkInterfacesPanel: React.FC<NetworkInterfacesPanelProps> = ({
 
     </div>
   );
-};
+});

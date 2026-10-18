@@ -19,11 +19,12 @@ interface BandwidthCalculatorProps {
   wifiSpeed: number;
 }
 
-export const BandwidthCalculator: React.FC<BandwidthCalculatorProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const BandwidthCalculator = React.memo(({
   language,
   ethSpeed: initialEthSpeed,
   wifiSpeed: initialWifiSpeed
-}) => {
+}: BandwidthCalculatorProps) => {
   const isAr = language === 'ar';
 
   const [ethMbps, setEthMbps] = useState<number>(initialEthSpeed || 60);
@@ -187,4 +188,4 @@ export const BandwidthCalculator: React.FC<BandwidthCalculatorProps> = ({
 
     </div>
   );
-};
+});

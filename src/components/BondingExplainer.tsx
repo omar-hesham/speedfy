@@ -20,10 +20,11 @@ interface BondingExplainerProps {
   onNavigateToSetup: () => void;
 }
 
-export const BondingExplainer: React.FC<BondingExplainerProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const BondingExplainer = React.memo(({
   language,
   onNavigateToSetup
-}) => {
+}: BondingExplainerProps) => {
   const isAr = language === 'ar';
   const [openSection, setOpenSection] = useState<number | null>(0);
 
@@ -184,4 +185,4 @@ export const BondingExplainer: React.FC<BondingExplainerProps> = ({
 
     </div>
   );
-};
+});
