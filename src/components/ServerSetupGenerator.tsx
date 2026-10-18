@@ -26,11 +26,12 @@ interface ServerSetupGeneratorProps {
   wifiConfig: NetworkInterfaceConfig;
 }
 
-export const ServerSetupGenerator: React.FC<ServerSetupGeneratorProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const ServerSetupGenerator = React.memo(({
   language,
   ethernetConfig,
   wifiConfig
-}) => {
+}: ServerSetupGeneratorProps) => {
   const isAr = language === 'ar';
 
   const [selectedMode, setSelectedMode] = useState<BondingMode>('NODE_PROXY');
@@ -366,4 +367,4 @@ export const ServerSetupGenerator: React.FC<ServerSetupGeneratorProps> = ({
 
     </div>
   );
-};
+});

@@ -54,12 +54,13 @@ const emptyLiveSpeedResult: LiveSpeedResult = {
   bytes: 0
 };
 
-export const SpeedTestEngine: React.FC<SpeedTestEngineProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const SpeedTestEngine = React.memo(({
   language,
   ethernetConfig,
   wifiConfig,
   onNavigateToSetup
-}) => {
+}: SpeedTestEngineProps) => {
   const isAr = language === 'ar';
 
   const [testMode, setTestMode] = useState<'MULTI_STREAM' | 'CHUNKED_IDM' | 'SINGLE_STREAM'>('MULTI_STREAM');
@@ -925,4 +926,4 @@ export const SpeedTestEngine: React.FC<SpeedTestEngineProps> = ({
 
     </div>
   );
-};
+});

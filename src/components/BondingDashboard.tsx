@@ -59,7 +59,8 @@ interface BondingDashboardProps {
   language: 'ar' | 'en';
 }
 
-const BondingDashboard: React.FC<BondingDashboardProps> = ({ language }) => {
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+const BondingDashboard = React.memo(({ language }: BondingDashboardProps) => {
   const isAr = language === 'ar';
   const [status, setStatus] = useState<BondingStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -434,6 +435,6 @@ const BondingDashboard: React.FC<BondingDashboardProps> = ({ language }) => {
       )}
     </div>
   );
-};
+});
 
 export default BondingDashboard;

@@ -24,7 +24,8 @@ interface NavbarProps {
   combinedSpeed: number;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
+// ⚡ Bolt Optimization: Wrapped in React.memo() to prevent unnecessary re-renders.
+export const Navbar = React.memo(({
   currentTab,
   setCurrentTab,
   language,
@@ -32,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isEthActive,
   isWifiActive,
   combinedSpeed
-}) => {
+}: NavbarProps) => {
   const isAr = language === 'ar';
 
   const navItems = [
@@ -184,4 +185,4 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
     </header>
   );
-};
+});
